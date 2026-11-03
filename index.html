@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Як упакувати сайт у кейс</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one 880px reading column; numbered steps, tool cards in a grid, instructions as open accordions, checklist at the end */
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --ink:#141A2B; --muted:#5D667C; --line:#DDE2EC;
+  --accent:#3550F0; --accent-soft:#E6EAFE; --note:#FFF6E3; --note-ink:#7A5200; --done:#1F9D6A;
+  --display:"Unbounded","Manrope",system-ui,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E121C; --surface:#171D2B; --ink:#E8ECF5; --muted:#9AA3B8; --line:#283043;
+  --accent:#7C8FFF; --accent-soft:#1F2850; --note:#2A2414; --note-ink:#F2C977; --done:#3FCB92; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E121C; --surface:#171D2B; --ink:#E8ECF5; --muted:#9AA3B8; --line:#283043;
+  --accent:#7C8FFF; --accent-soft:#1F2850; --note:#2A2414; --note-ink:#F2C977; --done:#3FCB92; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible,label:focus-within{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+.wrap{max-width:880px;margin:0 auto}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.top nav{display:flex;gap:4px;flex-wrap:wrap}
+.top nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px}
+.top nav a:hover{color:var(--ink);background:var(--surface)}
+
+/* hero */
+.hero{padding-block:72px 40px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,58px);line-height:1.05;letter-spacing:-.03em;margin:14px 0 18px;text-wrap:balance}
+.lead{font-size:19px;color:var(--muted);max-width:58ch;margin:0}
+
+/* steps */
+.step{padding-block:48px;border-top:1px solid var(--line);scroll-margin-top:72px}
+.step-head{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;margin-bottom:28px}
+.num{font-family:var(--display);font-weight:700;font-size:22px;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--accent);color:var(--surface)}
+.step-head .eyebrow{color:var(--muted)}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,3.6vw,32px);line-height:1.15;letter-spacing:-.02em;margin:4px 0 8px;text-wrap:balance}
+.step-head p{margin:0;color:var(--muted);max-width:60ch}
+
+/* tool cards */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:20px}
+.tool{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;transition:border-color .15s,transform .15s}
+.tool:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tool:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.tool .meta{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tool strong{font-size:18px;font-weight:700}
+.tool span.d{color:var(--muted);font-size:15px}
+.tool .go{margin-top:auto;padding-top:6px;font-size:13px;font-weight:700;color:var(--accent)}
+
+/* accordions */
+.guides{display:flex;flex-direction:column;gap:10px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:16px;scroll-margin-top:80px}
+details.flash{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;font-weight:700;font-size:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--display);font-size:20px;color:var(--accent);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+.body{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;counter-increment:s}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:13px;display:grid;place-items:center}
+ol.steps.star li::before{content:"★"}
+ol.steps li > span{min-width:0;padding-top:2px}
+kbd,code{font-family:var(--mono);font-size:.85em;background:var(--bg);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.note{background:var(--note);color:var(--note-ink);border-radius:12px;padding:12px 16px;font-size:14.5px}
+.btn{align-self:flex-start;display:inline-flex;gap:6px;align-items:center;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px}
+.btn:hover{background:var(--accent)}
+
+/* platforms */
+.platforms{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.plat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+.plat h3{font-family:var(--display);font-size:20px;margin:0}
+.plat .sub{color:var(--muted);font-size:14px;font-weight:600;margin:2px 0 14px}
+.plat ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.plat li{padding-left:16px;position:relative;font-size:15px}
+.plat li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.summary-note{margin-top:12px}
+
+/* checklist */
+.progress{display:flex;align-items:center;gap:14px;margin-bottom:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--done);transition:width .3s}
+.checks{display:flex;flex-direction:column;gap:8px}
+.check{display:grid;grid-template-columns:26px 1fr;gap:14px;align-items:start;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-radius:14px;cursor:pointer;transition:border-color .15s}
+.check:hover{border-color:var(--accent)}
+.check input{position:absolute;opacity:0;pointer-events:none}
+.box{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;transition:all .15s}
+.box svg{width:14px;height:14px;opacity:0}
+.check input:checked ~ .box{background:var(--done);border-color:var(--done)}
+.check input:checked ~ .box svg{opacity:1}
+.check input:checked ~ .txt b{text-decoration:line-through;color:var(--muted)}
+.txt b{display:block;font-weight:700}
+.txt small{color:var(--muted);font-size:14px}
+.reset{all:unset;cursor:pointer;font-size:13px;color:var(--muted);font-weight:600}
+.reset:hover{color:var(--accent)}
+
+footer{border-top:1px solid var(--line);padding-block:28px 48px;margin-top:24px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
+@media (max-width:520px){.step-head{grid-template-columns:1fr;gap:12px}.hero{padding-block:44px 28px}}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="https://ponomar.academy">ponomar.academy</a>
+    <nav>
+      <a href="#tools">Інструменти</a>
+      <a href="#platforms">Де публікувати</a>
+      <a href="#checklist">Пам'ятка</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Матеріал курсу · AI Web Designer</div>
+    <h1>Як упакувати сайт у кейс</h1>
+    <p class="lead">Скріншот, запис анімацій, мобільна версія — і де все це публікувати. Всі способи в одному місці.</p>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="step" id="tools">
+    <div class="step-head">
+      <div class="num">1</div>
+      <div><div class="eyebrow">Крок перший</div><h2>Скріншот всієї сторінки</h2><p>Зберегти сайт одним довгим зображенням — для кейсу і портфоліо.</p></div>
+    </div>
+    <div class="tools">
+      <button class="tool" data-target="g-devtools"><span class="meta">Chrome / Edge · Mac і Windows</span><strong>DevTools — без плагінів</strong><span class="d">Вбудований інструмент, працює завжди і на будь-якому пристрої.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-gofull"><span class="meta">Chrome · Розширення</span><strong>GoFullPage</strong><span class="d">Одна кнопка — сама прокрутить і збереже. Швидко і зручно.</span><span class="go">Інструкція ↓</span></button>
+    </div>
+    <div class="guides">
+      <details id="g-devtools" open><summary>DevTools — покроково</summary><div class="body">
+        <ol class="steps">
+          <li><span>Відкрий сайт → натисни <kbd>F12</kbd> (або <kbd>Cmd+Opt+I</kbd> на Mac)</span></li>
+          <li><span>Натисни <kbd>Ctrl+Shift+P</kbd> (або <kbd>Cmd+Shift+P</kbd>) — з'явиться рядок пошуку команд</span></li>
+          <li><span>Введи <code>screenshot</code> → вибери <b>Capture full size screenshot</b></span></li>
+          <li><span>Файл .png автоматично збережеться в Downloads</span></li>
+        </ol>
+        <div class="note">Якщо є fixed-елементи (sticky header тощо) — вони можуть дублюватися на скріншоті. В кейсі це не критично.</div>
+      </div></details>
+      <details id="g-gofull" open><summary>GoFullPage — встановлення і використання</summary><div class="body">
+        <ol class="steps">
+          <li><span>Chrome Web Store → знайди GoFullPage → «Додати в Chrome»</span></li>
+          <li><span>Відкрий сайт → натисни іконку розширення у правому верхньому куті</span></li>
+          <li><span>Воно само прокрутить сторінку і збереже як .png або .pdf</span></li>
+        </ol>
+        <div class="note">Може некоректно працювати з fixed-секціями та scroll-анімаціями. Якщо результат поганий — використовуй DevTools.</div>
+        <a class="btn" href="https://gofullpage.com" target="_blank" rel="noopener">Встановити GoFullPage ↗</a>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="step" id="record">
+    <div class="step-head">
+      <div class="num">2</div>
+      <div><div class="eyebrow">Крок другий</div><h2>Запис анімацій і скролу</h2><p>Записати відео як сайт виглядає в русі — найважливіша частина кейсу анімованого сайту.</p></div>
+    </div>
+    <div class="tools">
+      <button class="tool" data-target="g-mac"><span class="meta">Mac</span><strong>Вбудований запис екрану</strong><span class="d"><kbd>Cmd+Shift+5</kbd> → Record. Зберігається як .mov.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-win"><span class="meta">Windows</span><strong>Xbox Game Bar</strong><span class="d"><kbd>Win+G</kbd> або одразу <kbd>Win+Alt+R</kbd>. Зберігається як .mp4.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-iphone"><span class="meta">iPhone</span><strong>Вбудований запис</strong><span class="d">Пункт управління → кнопка Record. Зберігається в Фото.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-android"><span class="meta">Android 11+</span><strong>Screen Record</strong><span class="d">Свайп зверху → Screen Record. На старих Android — немає.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-obs"><span class="meta">Mac і Windows · Безкоштовно</span><strong>OBS Studio</strong><span class="d">Професійний запис екрану. Найкраща якість, гнучке налаштування.</span><span class="go">Інструкція ↓</span></button>
+    </div>
+    <div class="guides">
+      <details id="g-mac" open><summary>Mac — Screen Record</summary><div class="body">
+        <ol class="steps">
+          <li><span>Натисни <kbd>Cmd+Shift+5</kbd> — з'явиться панель внизу екрана</span></li>
+          <li><span>Вибери <b>Record Selected Portion</b> або <b>Record Entire Screen</b></span></li>
+          <li><span>Натисни Record → запиши скрол → зупини кнопкою у menu bar зверху</span></li>
+          <li><span>Файл .mov збережеться на Desktop</span></li>
+        </ol>
+      </div></details>
+      <details id="g-win" open><summary>Windows — Xbox Game Bar</summary><div class="body">
+        <ol class="steps">
+          <li><span>Натисни <kbd>Win+G</kbd> → відкриється Game Bar</span></li>
+          <li><span>Натисни Record, або одразу <kbd>Win+Alt+R</kbd> без відкриття панелі</span></li>
+          <li><span>Запиши скрол → ще раз <kbd>Win+Alt+R</kbd> щоб зупинити</span></li>
+          <li><span>Файл .mp4 в папці Відео / Captures</span></li>
+        </ol>
+        <div class="note">Game Bar не записує робочий стіл — лише вікна додатків. Переконайся що браузер не згорнутий.</div>
+      </div></details>
+      <details id="g-iphone" open><summary>iPhone — налаштування і запис</summary><div class="body">
+        <ol class="steps">
+          <li><span>Налаштування → Пункт управління → натисни + поряд з «Запис екрана»</span></li>
+          <li><span>Свайп вниз з правого верхнього кута → натисни кнопку Record</span></li>
+          <li><span>Відкрий сайт і прокрути</span></li>
+          <li><span>Натисни червону кнопку вгорі щоб зупинити</span></li>
+        </ol>
+      </div></details>
+      <details id="g-android" open><summary>Android — запис екрану</summary><div class="body">
+        <ol class="steps">
+          <li><span>Свайп зверху екрана → знайди Screen Record або «Запис екрану»</span></li>
+          <li><span>Натисни → відкрий сайт і запиши скрол</span></li>
+          <li><span>Зупини через панель швидкого доступу</span></li>
+        </ol>
+        <div class="note">Android до версії 11 — вбудованого запису немає. Використовуй емуляцію мобілки в Chrome DevTools (<kbd>Ctrl+Shift+M</kbd>).</div>
+      </div></details>
+      <details id="g-obs" open><summary>OBS Studio — покроково</summary><div class="body">
+        <ol class="steps">
+          <li><span>Завантаж і встанови OBS → Sources → + → <b>Display Capture</b> (весь екран) або <b>Window Capture</b> (тільки браузер)</span></li>
+          <li><span>Settings → Output → Recording Path — вибери куди зберігати файл</span></li>
+          <li><span>Натисни Start Recording → запиши скрол → Stop Recording</span></li>
+          <li><span>Файл .mkv або .mp4 збережеться у вказану папку</span></li>
+        </ol>
+        <div class="note">Краща якість ніж вбудовані інструменти. Підходить якщо потрібен великий файл для монтажу.</div>
+        <a class="btn" href="https://obsproject.com" target="_blank" rel="noopener">Завантажити OBS ↗</a>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="step" id="mobile">
+    <div class="step-head">
+      <div class="num">3</div>
+      <div><div class="eyebrow">Крок третій</div><h2>Мобільна версія</h2><p>Показати як сайт виглядає на телефоні — обов'язково для повного кейсу.</p></div>
+    </div>
+    <div class="tools">
+      <button class="tool" data-target="g-emul"><span class="meta">Chrome · Mac і Windows</span><strong>Без телефону — DevTools</strong><span class="d">Емуляція iPhone, Samsung та будь-якого пристрою прямо в браузері.</span><span class="go">Інструкція ↓</span></button>
+      <button class="tool" data-target="g-phone"><span class="meta">iPhone / Android</span><strong>З реального телефону</strong><span class="d">Відкрий сайт і запиши екран — виглядає найнатуральніше.</span><span class="go">Інструкція ↓</span></button>
+    </div>
+    <div class="guides">
+      <details id="g-emul" open><summary>Chrome DevTools — Mobile Emulation</summary><div class="body">
+        <ol class="steps">
+          <li><span><kbd>F12</kbd> → натисни іконку телефону у верхньому лівому куті (або <kbd>Ctrl+Shift+M</kbd>)</span></li>
+          <li><span>Зі списку вибери пристрій: iPhone 14, Samsung Galaxy S20 Ultra тощо</span></li>
+          <li><span>Скріншот: <kbd>Ctrl+Shift+P</kbd> → Capture screenshot</span></li>
+          <li><span>Відео: запусти запис екрану поки відкрита мобільна емуляція</span></li>
+        </ol>
+        <div class="note">iPhone 14 Pro (393×852) виглядає найкраще в кейсах.</div>
+      </div></details>
+      <details id="g-phone" open><summary>Реальний телефон</summary><div class="body">
+        <ol class="steps star">
+          <li><span><b>iPhone:</b> відкрий сайт в Safari або Chrome → запиши екран через Пункт управління</span></li>
+          <li><span><b>Android:</b> відкрий сайт → свайп зверху → Screen Record</span></li>
+        </ol>
+        <div class="note">Якщо сайт ще не задеплоєний — використовуй DevTools.</div>
+      </div></details>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="step" id="platforms">
+    <div class="step-head">
+      <div class="num">4</div>
+      <div><div class="eyebrow">Крок четвертий</div><h2>Де публікувати кейс</h2><p>Instagram і Dribbble — дві основні платформи для веб-дизайнерів. Кожна під свою мету.</p></div>
+    </div>
+    <div class="platforms">
+      <article class="plat">
+        <h3>Instagram</h3><div class="sub">Для аудиторії і клієнтів</div>
+        <ul>
+          <li><b>Reels:</b> запис скролу сайту — найкращий формат. 15–30 сек, вертикально 9:16.</li>
+          <li><b>Карусель:</b> перший слайд — скріншот, далі деталі, мобілка, результат.</li>
+          <li><b>Підпис:</b> що за сайт + які інструменти + CTA («посилання в шапці»).</li>
+        </ul>
+      </article>
+      <article class="plat">
+        <h3>Dribbble</h3><div class="sub">Для портфоліо і нетворкінгу</div>
+        <ul>
+          <li><b>Shot:</b> один скріншот — обкладинка проєкту. Розмір 800×600 або 1600×1200.</li>
+          <li><b>Gif або .mp4:</b> відео скролу виглядає набагато краще статики.</li>
+          <li><b>Опис:</b> що за проєкт, стек (HTML/CSS/GSAP/Webflow), посилання на сайт.</li>
+          <li><b>Теги:</b> web design, landing page, animation, ui design.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="note summary-note">Instagram — для залучення нових клієнтів і аудиторії. Dribbble — для портфоліо яке показуєш за посиланням. Краще публікувати на обох.</div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="step" id="checklist">
+    <div class="step-head">
+      <div class="num">5</div>
+      <div><div class="eyebrow">Пам'ятка</div><h2>Чеклист перед публікацією</h2><p>Натискай на пункти — відмічай що готово.</p></div>
+    </div>
+    <div class="progress"><span id="count">0 / 6</span><div class="bar"><i id="fill"></i></div><button class="reset" id="reset" type="button">Скинути</button></div>
+    <div class="checks" id="checks"></div>
+  </section>
+</main>
+
+<footer><div class="wrap"><a href="https://ponomar.academy">ponomar.academy</a><span>Матеріал курсу AI Web Designer</span></div></footer>
+
+<script>
+const items=[
+  ["Скріншот всієї сторінки збережено","DevTools → Capture full size screenshot або GoFullPage"],
+  ["Відео скролу записано (desktop)","Mac: Cmd+Shift+5 · Windows: Win+Alt+R"],
+  ["Мобільна версія — скріншот або відео","DevTools: Ctrl+Shift+M → обери пристрій · або з реального телефону"],
+  ["Відео обрізано і готове до публікації","15–30 сек для Instagram Reels · починай з найкрасивішого моменту"],
+  ["Опублікував в Instagram","Reels або карусель зі скріншотами"],
+  ["Опублікував на Dribbble","Shot зі скріншотом або анімованим gif / відео"]
+];
+const KEY="case-checklist";
+let saved=[];try{saved=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+const box=document.getElementById("checks");
+items.forEach(([t,s],i)=>{
+  const l=document.createElement("label");l.className="check";
+  l.innerHTML=`<input type="checkbox" id="c${i}"${saved[i]?" checked":""}><span class="box"><svg viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="txt"><b>${t}</b><small>${s}</small></span>`;
+  box.appendChild(l);
+});
+function update(){
+  const st=items.map((_,i)=>document.getElementById("c"+i).checked);
+  const n=st.filter(Boolean).length;
+  document.getElementById("count").textContent=n+" / "+items.length;
+  document.getElementById("fill").style.width=(n/items.length*100)+"%";
+  try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}
+}
+box.addEventListener("change",update);
+document.getElementById("reset").addEventListener("click",()=>{items.forEach((_,i)=>document.getElementById("c"+i).checked=false);update()});
+update();
+
+document.querySelectorAll(".tool").forEach(b=>b.addEventListener("click",()=>{
+  const d=document.getElementById(b.dataset.target);if(!d)return;
+  d.open=true;d.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  d.classList.add("flash");setTimeout(()=>d.classList.remove("flash"),1400);
+}));
+</script>
+</body>
+</html>
